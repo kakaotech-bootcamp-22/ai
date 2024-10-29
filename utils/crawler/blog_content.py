@@ -29,6 +29,9 @@ def get_blog_content_data(url, driver): # 네이버 블로그 아티클 정보 �
     img_cnt = 0
     emoji_cnt = 0
 
+    title_len = 0
+    whole_text_len = 0
+
     try:
         # URL에 접속
         driver.get(url)
@@ -51,11 +54,14 @@ def get_blog_content_data(url, driver): # 네이버 블로그 아티클 정보 �
         if title_tag:
             # 'title_tag' 내부의 'span' 태그 텍스트 추출
             title = title_tag.find('span').get_text().strip()
+            # 블로그 제목 길이
+            title_len = len(title)
         else:
             title = "제목 없음"
 
+
         # 텍스트 데이터(경로) 수집
-        text_save_path = collect_text(soup, a_id)
+        text_save_path, whole_text_len = collect_text(soup, a_id)
 
         # 이미지 & 이모지 데이터 수집
         d = img_emoji_urls(soup)
@@ -74,7 +80,7 @@ def get_blog_content_data(url, driver): # 네이버 블로그 아티클 정보 �
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-    return title, text_save_path, img_save_dir, img_cnt, emoji_cnt
+    return title, text_save_path, img_save_dir, img_cnt, emoji_cnt, title_len, whole_text_len
 
 if __name__ == "__main__":
     url = "https://blog.naver.com/hj861031/223601136491"

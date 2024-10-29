@@ -32,12 +32,13 @@ def collect_text(soup, article_id): # 네이버 블로그 아티클 정보 크�
             article_content.append(chunk)
 
     whole_text = ' '.join(article_content)
+    whole_text_len = len(whole_text)
     # print("whole_text:", whole_text)
 
     # 텍스트 파일 저장
     file_name = article_id
     save_path = save_blog_text(file_name, whole_text)
-    return save_path
+    return save_path, whole_text_len
 
 #if __name__ == "__main__":
     #article(url = "https://blog.naver.com/hj861031/223601136491")

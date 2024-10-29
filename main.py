@@ -57,7 +57,7 @@ def get_blog_links(keyword):
     return blog_links
 
 try:
-    keyword = "판교 맛집"
+    keyword = "찐맛집 리뷰"
     urls = get_blog_links(keyword)
     for url in urls:
         # 추출한 블로그 링크로 3 종류 데이터 추출
@@ -67,8 +67,9 @@ try:
         print(f"블로그 사용자 id  -  *블로그 id : {blog_id}  *사용자 id : {writer_id}")
 
         # 1. blog_content : 포스트 컨텐츠 데이터 (포스트 내 이미지 개수, 포스트 내 이모지 개수는 여기서 크롤링함 !)
-        title, text_save_path, img_save_dir, img_cnt, emoji_cnt = get_blog_content_data(url, driver)
+        title, text_save_path, img_save_dir, img_cnt, emoji_cnt, title_len, whole_text_len = get_blog_content_data(url, driver)
         print(f"포스트 컨텐츠 데이터  -  *제목 : {title}  *본문 url : {text_save_path}   *이미지 url : {img_save_dir}    *이미지 개수 : {img_cnt}  *이모지 개수 : {emoji_cnt}")
+        print(f"                    *제목 길이 : {title_len}     *본문 길이 : {whole_text_len}")
 
         # 2. blog_meta_data : 포스트 메타 데이터
         like_cnt, comment_cnt = get_blog_meta_data(url, driver)
