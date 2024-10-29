@@ -11,6 +11,8 @@ from utils.crawler.blog_content import get_article_writer_id, get_blog_content_d
 from utils.crawler.blog_meta import get_blog_meta_data
 from utils.crawler.blogger_meta import get_blogger_meta_data
 
+import pandas as pd
+
 # url: 네이버 블로그 링크
 chrome_options = Options()
 chrome_options.add_argument("--headless")  # 헤드리스 모드
@@ -59,6 +61,17 @@ def get_blog_links(keyword):
 try:
     keyword = "찐맛집 리뷰"
     urls = get_blog_links(keyword)
+
+    is_first = True
+
+    def get_next_index(file_path):
+        """파일의 마지막 인덱스 가져와 다음 인덱스 계산"""
+        if os.path.exists(file_path):
+            existing_df = pd.read_csv(file_path)
+            if not existing_df.empty:
+                return existing_df.index[-1] + 1
+        return 0  # 파일이 없거나 빈 경우 1부터 시작
+
     for url in urls:
         # 추출한 블로그 링크로 3 종류 데이터 추출
 
@@ -80,10 +93,113 @@ try:
         print(f"블로거 메타 데이터  -  *자기소개: {intro}  *배너 : {banner}   *이웃 수 : {neighbor_cnt}   *메뉴 개수 : {menu_cnt}  *메뉴에 속한 포스트 개수 : {post_in_menu_number}")
         print()
 
-        # 크롤링한 데이터들 모아서 csv 파일로 생성
+        # CSV 파일 생성 경로
+        post_content_path = "csv_data/post_content_data.csv"
+        post_meta_path = "csv_data/post_meta_data.csv"
+        blogger_meta_path = "csv_data/blogger_meta_data.csv"
 
-        # 총 3개의 csv 파일로 구성하기 !
+        # 1. 포스트 컨텐츠 데이터 저장
+        post_content_data = {
+            "blog_id": blog_id,
+            "writer_id": writer_id,
+            "title": title,
+            "text_save_path": text_save_path
+        }
+        post_content_data_df = pd.DataFrame([post_content_data])
+        post_content_data_df.index = [get_next_index(post_content_path)]  # 다음 인덱스 설정
+        post_content_data_df.to_csv(post_content_path, mode='a', encoding="utf-8-sig",
+                                    header=is_first, index_label="Index")
 
+        # 2. 포스트 메타 데이터 저장
+        post_meta_data = {
+            "blog_id": blog_id,
+            "writer_id": writer_id,
+            "title_len": title_len,
+            "whole_text_len": whole_text_len,
+            "img_save_dir": img_save_dir,
+            "img_cnt": img_cnt,
+            "emoji_cnt": emoji_cnt,
+            "like_cnt": like_cnt,
+            "comment_cnt": comment_cnt
+        }
+        post_meta_data_df = pd.DataFrame([post_meta_data])
+        post_meta_data_df.index = [get_next_index(post_meta_path)]  # 다음 인덱스 설정
+        post_meta_data_df.to_csv(post_meta_path, mode='a', encoding="utf-8-sig",
+                                 header=is_first, index_label="Index")
+
+        # 3. 블로거 메타 데이터 저장
+        blogger_meta_data = {
+            "blog_id": blog_id,
+            "writer_id": writer_id,
+            "intro": intro,
+            "banner": banner,
+            "neighbor_cnt": neighbor_cnt,
+            "menu_cnt": menu_cnt,
+            "post_in_menu_number": post_in_menu_number
+        }
+        blogger_meta_data_df = pd.DataFrame([blogger_meta_data])
+        blogger_meta_data_df.index = [get_next_index(blogger_meta_path)]  # 다음 인덱스 설정
+        blogger_meta_data_df.to_csv(blogger_meta_path, mode='a', encoding="utf-8-sig",
+                                    header=is_first, index_label="Index")
+
+        is_first = False  # 첫 번째 이후로는 헤더를 추가하지 않도록 설정
+
+        # # 크롤링한 데이터들 모아서 csv 파일로 생성=
+        # # 총 3개의 csv 파일로 구성하기 !
+        #
+        # # 1. 포스트 컨텐츠 데이터 저장
+        # post_content_data = {
+        #     "blog_id": blog_id,
+        #     "writer_id": writer_id,
+        #     "title": title,
+        #     "text_save_path": text_save_path
+        # }
+        #
+        # # 데이터프레임 생성
+        # post_content_data_df = pd.DataFrame([post_content_data])
+        #
+        # # CSV 파일에 추가 모드로 저장
+        # post_content_data_df.to_csv("csv_data/post_content_data.csv", mode='a', encoding="utf-8-sig",
+        #                             header=is_first, index_label="Index", index=True)
+        #
+        #
+        # # 2. 포스트 메타 데이터 저장
+        # post_meta_data = {
+        #     "blog_id": blog_id,
+        #     "writer_id": writer_id,
+        #     "title_len": title_len,
+        #     "whole_text_len": whole_text_len,
+        #     "img_save_dir": img_save_dir,
+        #     "img_cnt": img_cnt,
+        #     "emoji_cnt": emoji_cnt,
+        #     "like_cnt": like_cnt,
+        #     "comment_cnt": comment_cnt
+        # }
+        #
+        # # 데이터프레임 생성
+        # post_meta_data_df = pd.DataFrame([post_meta_data])
+        # # CSV 파일로 저장
+        # post_meta_data_df.to_csv("csv_data/post_meta_data.csv", mode='a', encoding="utf-8-sig",
+        #                          header=is_first, index_label="Index", index=True)
+        #
+        #
+        # # 3. 블로거 메타 데이터 저장
+        # blogger_meta_data = {
+        #     "blog_id": blog_id,
+        #     "writer_id": writer_id,
+        #     "intro" : intro,
+        #     "banner" : banner,
+        #     "neighbor_cnt" : neighbor_cnt,
+        #     "menu_cnt" : menu_cnt,
+        #     "post_in_menu_number" : post_in_menu_number
+        # }
+        #
+        # blogger_meta_data_df = pd.DataFrame([blogger_meta_data])
+        # # CSV 파일로 저장
+        # blogger_meta_data_df.to_csv("csv_data/blogger_meta_data.csv", mode='a', encoding="utf-8-sig",
+        #                             header=is_first, index_label="Index", index=True)
+        #
+        # is_first = False
 
 finally:
     driver.quit()
