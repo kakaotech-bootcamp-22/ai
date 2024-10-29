@@ -5,9 +5,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import time
-
-from utils.title_article_url import get_blog_links
-
 # 자기소개, 배너 텍스트,
 def get_info(blog_url):
     # Selenium 설정
@@ -44,7 +41,7 @@ def get_info(blog_url):
         # 3. 이웃 수
         neighbor_element = soup.select_one('.widget .cm-col1 em')  # .widget   .info .cm-col1
 
-        # 4. 블로거 메뉴 개수 -> 잘 안됌
+        # 4. 블로거 메뉴 개수 -> 수정
         menu_count_element = len(soup.find_all('.listimage')) #albumimage
 
         # 5. 포스트가 속한 메뉴 게시글 개수
