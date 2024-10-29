@@ -17,7 +17,7 @@ def get_blogger_meta_data(url, driver): # 네이버 블로그 아티클 정보 �
     banner = ""
     neighbor_cnt = 0
     menu_cnt = 0
-    post_in_menu_number = 0
+    post_in_menu_cnt = 0
 
     try:
         # URL에 접속
@@ -39,23 +39,24 @@ def get_blogger_meta_data(url, driver): # 네이버 블로그 아티클 정보 �
                 .itemfont.col 태그는 여러 개라 .caption.align로 자기소개 텍스트 접근
                 '''
         intro = soup.select_one('.caption.align .itemfont.col')
+        intro = intro.get_text(strip=True) if intro else None  # 텍스트만 추출하고 None 처리
 
         # 블로거 배너
         banner = soup.select_one('.itemtitlefont')
+        banner = banner.get_text(strip=True) if banner else None
 
         # 이웃 수
         neighbor_cnt = soup.select_one('.widget .cm-col1 em')  # .widget   .info .cm-col1
+        neighbor_cnt = neighbor_cnt.get_text(strip=True) if neighbor_cnt else None
 
         # 블로그 메뉴 개수
         menu_cnt = len(soup.find_all('.listimage'))  # albumimage
+        menu_cnt = len(soup.find_all(class_='listimage'))  # class명 앞에 `class_` 사용
 
         # 포스트가 속한 메뉴 게시글 개수
-
-        # <h4> 태그에서 텍스트 추출
-        h4_text = soup.select_one('h4.category_title').get_text()
-        # 정규 표현식을 사용하여 숫자만 추출
         import re
-        post_in_menu_number = re.search(r'\d{1,3}(?:,\d{3})*', h4_text)  # 1,000 이상의 숫자도 포함
+        h4_text = soup.select_one('h4.category_title').get_text() if soup.select_one('h4.category_title') else None
+        post_in_menu_cnt = re.search(r'\d{1,3}(?:,\d{3})*', h4_text).group() if h4_text else None  # 정규식 일치 결과 추출
 
 
         # 글 업로드 주기
@@ -78,7 +79,7 @@ def get_blogger_meta_data(url, driver): # 네이버 블로그 아티클 정보 �
     # else:
     #     print("자기소개를 찾을 수 없습니다.")
 
-    return intro, banner, neighbor_cnt, menu_cnt, post_in_menu_number
+    return intro, banner, neighbor_cnt, menu_cnt, post_in_menu_cnt
 
 if __name__ == "__main__":
     url = "https://blog.naver.com/hj861031/223601136491"

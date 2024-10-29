@@ -37,6 +37,7 @@ def img_emoji_urls(soup): #bs4 객체가 들어오면, 이미지 개수, 이모�
         else:
             if url.startswith("https://"): # data: 로 시작하는
                 img_urls.append(url)
+    num_emojis = len(emojis_url)
 
     # print("num of imgs:", len(img_urls))
     # print(f"- 처음 이미지 URL:{img_urls[0]}, 마지막 이미지 URL: {img_urls[-1]}")
