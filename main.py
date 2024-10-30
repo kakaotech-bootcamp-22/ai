@@ -1,4 +1,4 @@
-import os
+import os, time
 import pandas as pd
 
 from selenium import webdriver
@@ -28,8 +28,45 @@ def get_next_index(file_path):
             return existing_df.index[-1] + 1
     return 0  # 파일이 없거나 빈 경우 1부터 시작
 
+# 지정된 경로의 파일들 삭제
+def clear_directory(directory_path):
+    if os.path.exists(directory_path):
+        for file in os.listdir(directory_path):
+            file_path = os.path.join(directory_path, file)
+            try:
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    print(f"Deleted file: {file_path}")
+            except Exception as e:
+                print(f"Error deleting file {file_path}: {e}")
+    else:
+        print("Directory does not exist:", directory_path)
+
 try:
-    area_list = ['판교', "성수", "강남"]
+    # 파일 존재 시, 삭제 후 크롤링 시작
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    save_dir = os.path.join(base_dir, 'data', 'txt')
+    # 해당 경로의 파일 삭제
+    clear_directory(save_dir)
+
+    # CSV 파일 생성 경로
+    post_content_path = "csv_data/post_content_data.csv"
+    post_meta_path = "csv_data/post_meta_data.csv"
+    blogger_meta_path = "csv_data/blogger_meta_data.csv"
+
+    # 파일이 이미 존재하면 삭제
+    if os.path.exists(post_content_path):
+        os.remove(post_content_path)
+    if os.path.exists(post_meta_path):
+        os.remove(post_meta_path)
+    if os.path.exists(blogger_meta_path):
+        os.remove(blogger_meta_path)
+
+    # <크롤링 시작>
+    # 크롤링 시간 측정
+    start_time = time.time()
+
+    area_list = ['판교', "강남", "성수", "군자", "제주도"]
     print("Current working MAIN directory:", os.getcwd())
 
     is_first = True
@@ -63,10 +100,9 @@ try:
             print(f"블로거 메타 데이터  -  *자기소개: {intro}  *배너 : {banner}   *이웃 수 : {neighbor_cnt}   *메뉴 개수 : {menu_cnt}  *메뉴에 속한 포스트 개수 : {post_in_menu_number}")
             print()
 
-            # CSV 파일 생성 경로
-            post_content_path = "csv_data/post_content_data.csv"
-            post_meta_path = "csv_data/post_meta_data.csv"
-            blogger_meta_path = "csv_data/blogger_meta_data.csv"
+
+
+            # <크롤링한 데이터 저장>
 
             # 1. 포스트 컨텐츠 데이터 저장
             post_content_data = {
@@ -113,5 +149,10 @@ try:
                                         header=is_first, index_label="Index")
 
             is_first = False  # 첫 번째 이후로는 헤더를 추가하지 않도록 설정
+
+
 finally:
     driver.quit()
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"크롤링에 걸린 시간: {elapsed_time:.2f}초")

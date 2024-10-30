@@ -7,8 +7,8 @@
 
 from selenium.common import NoSuchElementException, TimeoutException
 import time, os
-from utils.fuction.blog_content_meta.img_emoji_urls import img_emoji_urls, download_images
-from utils.fuction.blog_content.text import collect_text
+from utils.functions.blog_content_meta.img_emoji_urls import img_emoji_urls, download_images
+from utils.functions.blog_content.text import collect_text
 
 # 블로그 및 사용자 id
 def get_article_writer_id(url):

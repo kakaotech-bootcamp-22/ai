@@ -23,6 +23,7 @@ def save_blog_text(file_name, content):
 
     return save_path + '.txt'
 
+
 def collect_text(soup, article_id): # 네이버 블로그 아티클 정보 크롤링하는 함수
     # 텍스트 데이터 수집
     content = soup.find_all('p', class_=re.compile('se-text-paragraph'))
