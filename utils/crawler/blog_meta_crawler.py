@@ -5,7 +5,7 @@
 """
 
 from selenium.common import NoSuchElementException, TimeoutException
-from utils.fuction.blog_content_meta.like_comment import get_like_comment_count
+from utils.functions.blog_content_meta.like_comment import get_like_comment_count
 
 
 def get_blog_meta_data(soup): # 네이버 블로그 아티클 정보 크롤링하는 함수
