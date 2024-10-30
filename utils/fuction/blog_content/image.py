@@ -23,9 +23,6 @@ def img_emoji_urls(soup): #bs4 객체가 들어오면, 이미지 개수, 이모�
     num_emojis = 0  # 이모지 개수
     img_candidates = [img['src'] for img in soup.find_all('img') if img.get('src')]
 
-    # for img_candidate in img_candidates:
-    #     print(img_candidate + '\n')
-
     for url in img_candidates:
         match = re.match(r"^https://([^\.]+)\.pstatic\.net/", url)
         if match:
@@ -38,12 +35,6 @@ def img_emoji_urls(soup): #bs4 객체가 들어오면, 이미지 개수, 이모�
         else:
             if url.startswith("https://"): # data: 로 시작하는
                 img_urls.append(url)
-
-    # print("num of imgs:", len(img_urls))
-    # print(f"- 처음 이미지 URL:{img_urls[0]}, 마지막 이미지 URL: {img_urls[-1]}")
-    # """for url in img_urls:
-    #     print(f"{url}\n")"""
-    # print("num of emojis", num_emojis)
 
     d = {"img_cnt": len(img_urls), "img_urls": img_urls, "emoji_cnt": num_emojis}
     return d # 딕셔너리
@@ -74,18 +65,3 @@ def download_images(img_urls, save_dir):
                 print(f"Failed to download image from {url} (status code: {response.status_code})")
         except Exception as e:
             print(f"An error occurred while downloading {url}: {e}")
-
-"""if __name__ == '__main__':
-     img_emoji_urls(url='https://blog.naver.com/hj861031/223601136491')
-    #a = update_url_type_param('https://postfiles.pstatic.net/MjAyNDA5MjlfMTE0/MDAxNzI3NTM2NDc2ODI5.LViUuL9TcYOry7VNHwVEqQ0A-eFZi3ZwMJ7wA0uFG2sg.jU5K2QXyCmPFllIcWbpU8qV5SxB7DaOwHz1LgP-9Ye8g.JPEG/IMG_2196.jpg?type=w80_blur' , 'w580')
-     # 태그 이미지 - https://xn--939au0g4vj8sq.net/_sp/wg.php?ctf=MTcwOTI0fDE1MDQ4NjZ8YWRtXzI2OTEyOHw2NjYxMHwyMDI0MTAwMg==
-
-if __name__ == "__main__":
-
-    # 사용 예시
-    img_urls = [
-        "https://postfiles.pstatic.net/MjAyNDA5MjlfMTgx/MDAxNzI3NTM2NDc0OTM2.p031lLK2gHsYiZvhFQdKGe-5sOsVXrJ6Z0CNZyEE7fog.18FIL6uMT0CQ8F3EWu3Ib0hlMJau-E7ODBU_LNVTzQog.JPEG/IMG_2172.jpg?type=w80_blur",
-        "https://postfiles.pstatic.net/MjAyNDA5MjlfMjk5/MDAxNzI3NTM2NDc3OTI1.xNEylSPGacrEKjvAIAMbNU3ZKnVKBGBPwFqH6G1uD-8g.PW3u9d4UDHhI4KCPbCB_7OrvXQkpaDd1L3zCnMiv2vEg.JPEG/IMG_2212.jpg?type=w580"
-    ]
-    save_dir = "./images/"  # 원하는 디렉토리 경로
-    download_images(img_urls, save_dir)"""

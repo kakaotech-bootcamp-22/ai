@@ -1,20 +1,16 @@
-import requests
-from dotenv import load_dotenv
+import os
+import pandas as pd
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
-import os
 
 from utils.crawler.blog_content_crawler import get_article_writer_id, get_blog_content_data
 from utils.crawler.blog_meta_crawler import get_blog_meta_data
 from utils.crawler.blogger_meta_crawler import get_blogger_meta_data
-
 from utils.blog_links_loader import get_blog_links
 from utils.html_parser import parse_html
-
-import pandas as pd
 
 # url: 네이버 블로그 링크
 chrome_options = Options()
@@ -23,7 +19,6 @@ chrome_options.add_argument("--no-sandbox")  # 샌드박스 모드 비활성화
 chrome_options.add_argument("--disable-dev-shm-usage")  # /dev/shm 사용 안 함 (Docker에서 메모리 문제 해결)
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-
 
 def get_next_index(file_path):
     """파일의 마지막 인덱스 가져와 다음 인덱스 계산"""
@@ -50,7 +45,6 @@ try:
             soup = parse_html(driver, url)
 
             # 추출한 블로그 링크로 3 종류 데이터 추출
-
             # 0. 블로그 사용자 id
             blog_id, writer_id = get_article_writer_id(url)
             print(f"블로그 사용자 id  -  *블로그 id : {blog_id}  *사용자 id : {writer_id}")

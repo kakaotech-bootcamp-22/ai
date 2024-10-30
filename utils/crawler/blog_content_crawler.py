@@ -5,9 +5,7 @@
 긁어올 데이터 항목 - 이미지 좋아요 수, 댓글 수
 """
 
-from bs4 import BeautifulSoup
 from selenium.common import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
 import time, os
 from utils.fuction.blog_content_meta.img_emoji_urls import img_emoji_urls, download_images
 from utils.fuction.blog_content.text import collect_text

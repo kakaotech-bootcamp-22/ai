@@ -64,15 +64,3 @@ def calculate_average_upload_interval(post_dates):
     avg_interval = sum(intervals) / len(intervals)
 
     return avg_interval
-
-
-# # 실행 예시
-# blog_url = "https://blog.naver.com/sample_blog_id"
-# try:
-#     post_dates = get_all_post_dates(blog_url)
-#     avg_interval = calculate_average_upload_interval(post_dates)
-#
-#     if avg_interval:
-#         print(f"평균 업로드 주기: {avg_interval:.2f}일")
-#     else:
-#         print("게시글이 충분하지 않아 주기를 계산할 수 없습니다.")

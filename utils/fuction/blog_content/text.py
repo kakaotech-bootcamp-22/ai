@@ -2,7 +2,6 @@ import os
 import re
 
 def save_blog_text(file_name, content):
-    # save_dir = '../data/txt'
     # 프로젝트 최상위 폴더의 절대 경로를 기준으로 data/txt 경로 설정
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
     save_dir = os.path.join(base_dir, 'data', 'txt')
@@ -27,6 +26,7 @@ def save_blog_text(file_name, content):
 def collect_text(soup, article_id): # 네이버 블로그 아티클 정보 크롤링하는 함수
     # 텍스트 데이터 수집
     content = soup.find_all('p', class_=re.compile('se-text-paragraph'))
+
     # 본문 내용만 리스트로 저장
     article_content = []
     for item in content:
@@ -42,5 +42,5 @@ def collect_text(soup, article_id): # 네이버 블로그 아티클 정보 크�
     # 텍스트 파일 저장
     file_name = article_id
     save_path = save_blog_text(file_name, whole_text)
-    return save_path, whole_text_len
 
+    return save_path, whole_text_len

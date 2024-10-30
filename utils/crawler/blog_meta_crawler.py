@@ -4,12 +4,7 @@
 포스트 메타 데이터 : 포스트 제목 길이, 포스트 길이, 포스트 업로드 날짜, , 공감 개수, 댓글 개수
 """
 
-from bs4 import BeautifulSoup
 from selenium.common import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
-import time, os
-from utils.fuction.blog_content_meta.img_emoji_urls import img_emoji_urls, download_images
-from utils.fuction.blog_content.text import collect_text
 from utils.fuction.blog_content_meta.like_comment import get_like_comment_count
 
 

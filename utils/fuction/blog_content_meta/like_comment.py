@@ -18,6 +18,3 @@ def get_like_comment_count(soup): # 좋아요와 코멘트 개수 세는 함수
         print("댓글 수를 찾을 수 없습니다.")
 
     return like_count, comment_cnt
-
-"""if __name__ == "__main__":
-    article(url="https://blog.naver.com/hj861031/223601136491")"""
