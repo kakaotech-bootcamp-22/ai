@@ -59,6 +59,7 @@ def download_images(img_urls, save_dir):
         filename = url.split("/")[-1].split("?")[0].split('.')[0]
         img_format = '.jpg'
         file_path = os.path.join(save_dir, filename+img_format)
+        print("file_path:", file_path)
         # print(save_dir, filename, img_format)
         # print("file_path:", file_path)
 

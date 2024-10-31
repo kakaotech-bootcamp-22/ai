@@ -53,9 +53,9 @@ def get_blog_content_data(soup, url): # 네이버 블로그 아티클 정보 크
         img_cnt, emoji_cnt = d["img_cnt"], d["emoji_cnt"]
 
         # 이미지 데이터(경로) 수집
-        img_save_dir = os.path.join('../data/imgs', a_id)
+        os.makedirs('data/img', exist_ok=True)
+        img_save_dir = os.path.join('data/img', a_id)
         img_urls = d['img_urls']
-        # print("이미지 저장 path:", img_save_dir)
         download_images(img_urls, img_save_dir)
 
     except NoSuchElementException as e:
