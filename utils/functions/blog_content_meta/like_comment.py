@@ -12,12 +12,9 @@ def get_like_comment_count(soup): # 좋아요와 코멘트 개수 세는 함수
     comment_count_element = soup.find('em', id='commentCount')
     comment_cnt = 0
     if comment_count_element:
-        comment_count = comment_count_element.get_text(strip=True)
+        comment_cnt = comment_count_element.get_text(strip=True)
         # print("댓글 수:", comment_count)
     else:
         print("댓글 수를 찾을 수 없습니다.")
 
     return like_count, comment_cnt
-
-"""if __name__ == "__main__":
-    article(url="https://blog.naver.com/hj861031/223601136491")"""
