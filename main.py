@@ -50,9 +50,10 @@ try:
     clear_directory(save_dir)
 
     # CSV 파일 생성 경로
-    post_content_path = "csv_data/post_content_data.csv"
-    post_meta_path = "csv_data/post_meta_data.csv"
-    blogger_meta_path = "csv_data/blogger_meta_data.csv"
+    os.makedirs('data/csv', exist_ok=True)
+    post_content_path = "data/csv/post_content_data.csv"
+    post_meta_path = "data/csv/post_meta_data.csv"
+    blogger_meta_path = "data/csv/blogger_meta_data.csv"
 
     # 파일이 이미 존재하면 삭제
     if os.path.exists(post_content_path):
