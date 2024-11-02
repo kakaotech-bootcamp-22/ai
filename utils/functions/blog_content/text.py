@@ -3,15 +3,11 @@ import re
 
 def save_blog_text(file_name, content):
     # 프로젝트 최상위 폴더의 절대 경로를 기준으로 data/txt 경로 설정
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-    save_dir = os.path.join(base_dir, 'data', 'txt')
-
+    save_dir = 'data/txt'
     if not os.path.exists(save_dir): # 저장 패스 없으면 여기서 체크
         os.makedirs(save_dir)
         print("no directory!")
-
     save_path = os.path.join(save_dir, file_name)
-    print(save_path)
 
     try:
         with open(save_path + '.txt', "w", encoding="utf-8") as file:
