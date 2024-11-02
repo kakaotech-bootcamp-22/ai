@@ -67,7 +67,21 @@ try:
     # 크롤링 시간 측정
     start_time = time.time()
 
-    area_list = ['판교', "강남", "성수", "군자", "제주도"]
+    #area_list = ['판교', "강남", "성수", "군자", "제주도"]
+    area_list = [
+        "강남", "교대", "홍대", "이태원", "성수", "압구정", "신사", "명동", "여의도", "건대", "군자",
+        "판교", "가로수길", "종로", "삼청동", "광화문", "서래마을", "동대문", "합정", "상수", "대학로",
+        "신촌", "서강대", "보문동", "신림동", "사당", "삼각지", "용산", "한남동", "서울대입구", "을지로", "연남동", "안국",
+        "노량진", "청담동", "연남동", "마포", "잠실", "선릉", "북촌", "남산", "서초", "정자역",
+        "왕십리", "청량리", "미아리", "의정부", "광명", "여수", "순천", "전주 한옥마을", "이촌동", "대치동", "송파"
+        "해운대", "광안리", "전포동", "서면", "송정", "구월동", "송도", "주안", "인사동", "목동",
+        "양재", "일산", "수원", "동탄", "기흥", "용인", "안양", "평촌", "구리", "김포", "파주", "시흥", "하남 미사",
+        "남포동", "남천동", "동래", "성남", "부평", "화정동", "장안동", "가양동", "홍제동", "문래동",
+        "백석동", "대구 동성로", "대구", "대전", "청주 성안길", "천안 신부동", "군산 월명동", "익산 모현동", "포항 구룡포", "울산 삼산동",
+        "강릉", "춘천", "평창","속초", "양양", "철원", "동해", "원주", "정선", "인제",
+        "제주 서귀포", "제주 애월", "한림"
+    ]
+    print(len(area_list))
     print("Current working MAIN directory:", os.getcwd())
 
     is_first = True
@@ -78,9 +92,12 @@ try:
         print()
         urls = get_blog_links(keyword)
 
-        for url in urls:
+        blogger_meta_data_lst = []
+        post_content_data_lst = []
+        post_meta_data_lst = []
 
-            # ulr 별 html 파싱
+        for url in urls:
+            # url 별 html 파싱
             soup = parse_html(driver, url)
 
             # 추출한 블로그 링크로 3 종류 데이터 추출
@@ -102,57 +119,39 @@ try:
             print(f"블로거 메타 데이터  -  *자기소개: {intro}  *배너 : {banner}   *이웃 수 : {neighbor_cnt}   *메뉴 개수 : {menu_cnt}  *메뉴에 속한 포스트 개수 : {post_in_menu_number}")
             print()
 
-
-
             # <크롤링한 데이터 저장>
-
             # 1. 포스트 컨텐츠 데이터 저장
-            post_content_data = {
-                "blog_id": blog_id,
-                "writer_id": writer_id,
-                "title": title,
-                "text_save_path": text_save_path,
-            }
-            post_content_data_df = pd.DataFrame([post_content_data])
-            post_content_data_df.index = [get_next_index(post_content_path)]  # 다음 인덱스 설정
-            post_content_data_df.to_csv(post_content_path, mode='a', encoding="utf-8-sig",
-                                        header=is_first, index_label="Index")
-
+            post_content_data_lst.append([blog_id,writer_id,title,text_save_path])
             # 2. 포스트 메타 데이터 저장
-            post_meta_data = {
-                "blog_id": blog_id,
-                "writer_id": writer_id,
-                "title_len": title_len,
-                "whole_text_len": whole_text_len,
-                "img_save_dir": img_save_dir,
-                "img_cnt": img_cnt,
-                "emoji_cnt": emoji_cnt,
-                "like_cnt": like_cnt,
-                "comment_cnt": comment_cnt,
-                "img_urls": img_urls
-            }
-            post_meta_data_df = pd.DataFrame([post_meta_data])
-            post_meta_data_df.index = [get_next_index(post_meta_path)]  # 다음 인덱스 설정
-            post_meta_data_df.to_csv(post_meta_path, mode='a', encoding="utf-8-sig",
-                                     header=is_first, index_label="Index")
-
+            post_meta_data_lst.append([blog_id,writer_id, title_len, whole_text_len,
+                                       img_save_dir, img_cnt, emoji_cnt, like_cnt, comment_cnt, img_urls])
             # 3. 블로거 메타 데이터 저장
-            blogger_meta_data = {
-                "blog_id": blog_id,
-                "writer_id": writer_id,
-                "intro": intro,
-                "banner": banner,
-                "neighbor_cnt": neighbor_cnt,
-                "menu_cnt": menu_cnt,
-                "post_in_menu_number": post_in_menu_number
-            }
-            blogger_meta_data_df = pd.DataFrame([blogger_meta_data])
-            blogger_meta_data_df.index = [get_next_index(blogger_meta_path)]  # 다음 인덱스 설정
-            blogger_meta_data_df.to_csv(blogger_meta_path, mode='a', encoding="utf-8-sig",
-                                        header=is_first, index_label="Index")
-
-            is_first = False  # 첫 번째 이후로는 헤더를 추가하지 않도록 설정
-
+            blogger_meta_data_lst.append([blog_id, writer_id, intro, banner,
+                                          neighbor_cnt, menu_cnt, post_in_menu_number])
+        # 포스트 컨텐츠 데이터 csv 저장
+        post_content_data_df = pd.DataFrame(post_content_data_lst , columns = ["blog_id", "writer_id","title", "text_save_path"])
+        next_index = get_next_index(post_content_path)
+        post_content_data_df.index = range(next_index, next_index + len(post_content_data_df))
+        post_content_data_df.to_csv(post_content_path, mode='a', encoding="utf-8-sig",
+                                    header= is_first, index_label="Index")
+        # 포스트 메타 데이터 csv 저장
+        post_meta_data_df = pd.DataFrame(post_meta_data_lst,
+                                         columns = ["blog_id", "writer_id",
+                                                    "title_len", "whole_text_len", "img_save_dir", "img_cnt",
+                                                    "emoji_cnt","like_cnt", "comment_cnt", "img_urls"])
+        next_index = get_next_index(post_meta_path)  # 다음 인덱스 설정
+        post_meta_data_df.index = range(next_index, next_index + len(post_meta_data_df))
+        post_meta_data_df.to_csv(post_meta_path, mode='a', encoding="utf-8-sig",
+                                 header=is_first, index_label="Index")
+        # 블로거 메타 데이터 csv 저장
+        blogger_meta_data_df = pd.DataFrame(blogger_meta_data_lst,
+                                            columns = ["blog_id", "writer_id", "intro", "banner",
+                                                       "neighbor_cnt", "menu_cnt", "post_in_menu_number"] )
+        next_index = get_next_index(blogger_meta_path)  # 다음 인덱스 설정
+        blogger_meta_data_df.index = range(next_index, next_index + len(blogger_meta_data_df))
+        blogger_meta_data_df.to_csv(blogger_meta_path, mode='a', encoding="utf-8-sig",
+                                    header=is_first, index_label="Index")
+        is_first = False  # 첫 번째 이후로는 헤더를 추가하지 않도록 설정
 
 finally:
     driver.quit()
