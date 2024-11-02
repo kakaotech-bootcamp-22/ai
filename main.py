@@ -73,6 +73,7 @@ try:
     is_first = True
     for area in area_list:
         keyword = area + " 맛집 리뷰"
+        #keyword = "내돈내산 "+ area + " 맛집 리뷰" # 진짜 리뷰 키워드 서칭
         print(keyword)
         print()
         urls = get_blog_links(keyword)
@@ -88,7 +89,7 @@ try:
             print(f"블로그 사용자 id  -  *블로그 id : {blog_id}  *사용자 id : {writer_id}")
 
             # 1. blog_content : 포스트 컨텐츠 데이터 (포스트 내 이미지 개수, 포스트 내 이모지 개수는 여기서 크롤링함 !)
-            title, text_save_path, img_save_dir, img_cnt, emoji_cnt, title_len, whole_text_len = get_blog_content_data(soup, url)
+            title, text_save_path, img_save_dir, img_cnt, emoji_cnt, title_len, whole_text_len, img_urls = get_blog_content_data(soup, url)
             print(f"포스트 컨텐츠 데이터  -  *제목 : {title}  *본문 url : {text_save_path}   *이미지 url : {img_save_dir}    *이미지 개수 : {img_cnt}  *이모지 개수 : {emoji_cnt}")
             print(f"                    *제목 길이 : {title_len}     *본문 길이 : {whole_text_len}")
 
@@ -110,7 +111,7 @@ try:
                 "blog_id": blog_id,
                 "writer_id": writer_id,
                 "title": title,
-                "text_save_path": text_save_path
+                "text_save_path": text_save_path,
             }
             post_content_data_df = pd.DataFrame([post_content_data])
             post_content_data_df.index = [get_next_index(post_content_path)]  # 다음 인덱스 설정
@@ -127,7 +128,8 @@ try:
                 "img_cnt": img_cnt,
                 "emoji_cnt": emoji_cnt,
                 "like_cnt": like_cnt,
-                "comment_cnt": comment_cnt
+                "comment_cnt": comment_cnt,
+                "img_urls": img_urls
             }
             post_meta_data_df = pd.DataFrame([post_meta_data])
             post_meta_data_df.index = [get_next_index(post_meta_path)]  # 다음 인덱스 설정

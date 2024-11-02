@@ -69,7 +69,7 @@ def get_blog_content_data(soup, url): # 네이버 블로그 아티클 정보 크
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-    return title, text_save_path, img_save_dir, img_cnt, emoji_cnt, title_len, whole_text_len
+    return title, text_save_path, img_save_dir, img_cnt, emoji_cnt, title_len, whole_text_len, img_urls
 
 if __name__ == "__main__":
     url = "https://blog.naver.com/hj861031/223601136491"
