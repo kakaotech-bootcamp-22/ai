@@ -35,8 +35,9 @@ def get_blogger_meta_data(soup): # 네이버 블로그 아티클 정보 크롤�
         neighbor_cnt = neighbor_cnt.get_text(strip=True) if neighbor_cnt else None
 
         # 블로그 메뉴 개수
-        menu_cnt = len(soup.find_all('.listimage'))  # albumimage
-        menu_cnt = len(soup.find_all(class_='listimage'))  # class명 앞에 `class_` 사용
+        menu_cnt1 = len(soup.find_all(class_='listimage'))  # class명 앞에 `class_` 사용
+        menu_cnt2 = len(soup.find_all(class_='albumimage'))  # albumimage
+        menu_cnt = menu_cnt1 + menu_cnt2 - 1
 
         # 포스트가 속한 메뉴 게시글 개수
 
