@@ -29,14 +29,15 @@ def img_emoji_urls(soup): #bs4 객체가 들어오면, 이미지 개수, 이모�
             if match.group(1) == "postfiles": # 이미지 유형
                 url = update_url_type_param(url, "w580")  # 이미지 블러처리 해제
                 img_urls.append(url)
-            elif  match.group(1) == "storep-phinf": # 이모지 유형
+            elif match.group(1) == "storep-phinf": # 이모지 유형
                 emojis_url.append(url)
         # 그 외 경우 -> 이미지 ?
         else:
             if url.startswith("https://"): # data: 로 시작하는
                 img_urls.append(url)
 
-    d = {"img_cnt": len(img_urls), "img_urls": img_urls, "emoji_cnt": num_emojis}
+    d = {"img_cnt": len(img_urls), "img_urls": img_urls, "emoji_cnt": num_emojis, "emoji_urls":emojis_url}
+
     return d # 딕셔너리
 
 def download_images(img_urls, save_dir):
@@ -44,14 +45,12 @@ def download_images(img_urls, save_dir):
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    for url in img_urls:
+    for index, url in enumerate(img_urls):
         # print("이미지 url:", url)
-        # 파일명 추출 (기본적으로 URL에서 마지막 부분 사용)
-        filename = url.split("/")[-1].split("?")[0].split('.')[0]
         img_format = '.jpg'
-        file_path = os.path.join(save_dir, filename+img_format)
+        file_path = os.path.join(save_dir, str(index) + img_format)
         # print(save_dir, filename, img_format)
-        # print("file_path:", file_path)
+        print("file_path:", file_path)
 
         try:
             # 이미지 다운로드
