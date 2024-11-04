@@ -26,6 +26,7 @@ def get_blog_content_data(soup, url): # 네이버 블로그 아티클 정보 크
     img_save_dir = None
     img_cnt = 0
     emoji_cnt = 0
+    img_urls = [] # 추가
 
     title_len = 0
     whole_text_len = 0
@@ -35,15 +36,8 @@ def get_blog_content_data(soup, url): # 네이버 블로그 아티클 정보 크
         a_id, w_id = get_article_writer_id(url)
 
         # 블로그 제목 ( 제목 길이, 본문 길이 수집 -> 일단 나중에 .. .. ..)
-        title_tag = soup.find('div', class_='se-module se-module-text se-title-text')
-        if title_tag:
-            # 'title_tag' 내부의 'span' 태그 텍스트 추출
-            title = title_tag.find('span').get_text().strip()
-            # 블로그 제목 길이
-            title_len = len(title)
-        else:
-            title = "제목 없음"
-
+        title = soup.title.string if soup.title else "제목 없음" # <head> 안의 <title> 태그 내 텍스트 가져오기
+        print("Title:", title)
 
         # 텍스트 데이터(경로) 수집 및 디렉토리에 저장
         text_save_path, whole_text_len = collect_text(soup, a_id)
