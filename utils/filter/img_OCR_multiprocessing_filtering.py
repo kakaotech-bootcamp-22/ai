@@ -96,7 +96,7 @@ def process_blog_folder(blog_folder, max_images=7):
     return (blog_id, False)
 
 
-def find_sponsored_posts(base_dir, max_images=7):
+def get_fake_blog_id_by_ocr_filtering(max_images=7):
     """
     저장된 이미지에서 '소정의 원고료' 문구가 포함된 블로그 ID를 찾습니다.
 
@@ -107,7 +107,10 @@ def find_sponsored_posts(base_dir, max_images=7):
         set: 광고성 게시물이 있는 블로그 ID 집합
     """
 
-    base_path = Path(base_dir)
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    img_base_dir = os.path.join(project_root, 'data', 'img')
+
+    base_path = Path(img_base_dir)
     blog_folders = [f for f in base_path.iterdir() if f.is_dir()]
 
     print(f"총 {len(blog_folders)}개의 블로그 폴더 처리 시작...")
@@ -136,14 +139,13 @@ def find_sponsored_posts(base_dir, max_images=7):
 
 # 사용 예시
 if __name__ == "__main__":
-    img_base_dir = "../data/img"
     # 시작 시간 기록
     import time
 
     start_time = time.time()
 
     # 뒤에서 5개 이미지만 확인
-    fake_review_blog_ids = find_sponsored_posts(img_base_dir, max_images=5)
+    fake_review_blog_ids = get_fake_blog_id_by_ocr_filtering()
 
     # 종료 시간 기록 및 출력
     end_time = time.time()
