@@ -10,15 +10,13 @@ from functools import partial
 # pytesseract 경로 변경
 pytesseract.pytesseract.tesseract_cmd = "/opt/homebrew/bin/tesseract"
 
-TARGET_KEYWORDS = ('소정의 원고료', '일정액의 수수료', '소정의 적립금', '제공받아', '지원받아', '체험단')  # '광고' -> 광고/지원이 전혀 없는, '원고료', '수수료', '제품'
-
 def get_image_number(filename):
     """이미지 파일명에서 숫자를 추출합니다."""
     match = re.search(r'(\d+)', filename)
     return int(match.group(1)) if match else 0
 
 
-def check_text_in_image(image_path, scale_percent=50):
+def check_text_in_image(OCR_TARGET_KEYWORDS, image_path, scale_percent=50):
     """
     이미지에서 특정 텍스트를 찾습니다.
 
@@ -45,7 +43,7 @@ def check_text_in_image(image_path, scale_percent=50):
             text = pytesseract.image_to_string(img, config=custom_config, lang='kor')
 
             # 추출한 텍스트에 target_text 있는지 확인
-            for keyword in TARGET_KEYWORDS:
+            for keyword in OCR_TARGET_KEYWORDS:
                 if keyword in text:
                     return True
 
@@ -66,7 +64,7 @@ def check_text_in_image(image_path, scale_percent=50):
     return False
 
 
-def process_blog_folder(blog_folder, max_images=7):
+def process_blog_folder(blog_folder, OCR_TARGET_KEYWORDS, max_images=7):
     """
     한 블로그 폴더의 이미지들을 처리합니다.
 
@@ -90,13 +88,13 @@ def process_blog_folder(blog_folder, max_images=7):
 
     # 뒤에서부터 지정된 수의 이미지만 확인
     for img_path in image_files[:max_images]:
-        if check_text_in_image(img_path):
+        if check_text_in_image(OCR_TARGET_KEYWORDS, img_path):
             return (blog_id, True)
 
     return (blog_id, False)
 
 
-def get_fake_blog_id_by_ocr_filtering(max_images=7):
+def get_blog_id_by_ocr_filtering(OCR_TARGET_KEYWORDS, img_base_dir, max_images=7):
     """
     저장된 이미지에서 '소정의 원고료' 문구가 포함된 블로그 ID를 찾습니다.
 
@@ -106,9 +104,6 @@ def get_fake_blog_id_by_ocr_filtering(max_images=7):
     Returns:
         set: 광고성 게시물이 있는 블로그 ID 집합
     """
-
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    img_base_dir = os.path.join(project_root, 'data', 'img')
 
     base_path = Path(img_base_dir)
     blog_folders = [f for f in base_path.iterdir() if f.is_dir()]
@@ -122,7 +117,7 @@ def get_fake_blog_id_by_ocr_filtering(max_images=7):
     # 멀티프로세싱 풀 생성
     with multiprocessing.Pool(processes=num_cores) as pool:
         # 부분 함수를 생성하여 max_images 파라미터 고정
-        process_func = partial(process_blog_folder, max_images=max_images)
+        process_func = partial(process_blog_folder, OCR_TARGET_KEYWORDS = OCR_TARGET_KEYWORDS, max_images=max_images)
 
         # tqdm으로 진행률 표시하면서 병렬 처리
         results = list(tqdm(
@@ -139,13 +134,18 @@ def get_fake_blog_id_by_ocr_filtering(max_images=7):
 
 # 사용 예시
 if __name__ == "__main__":
+    OCR_TARGET_KEYWORDS = ('소정의 원고료', '일정액의 수수료', '소정의 적립금', '제공받아', '지원받아', '체험단')  # '광고' -> 광고/지원이 전혀 없는, '원고료', '수수료', '제품'
+
     # 시작 시간 기록
     import time
 
     start_time = time.time()
 
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    img_base_dir = os.path.join(project_root, 'data', 'collected_fake_data', 'img')
+
     # 뒤에서 5개 이미지만 확인
-    fake_review_blog_ids = get_fake_blog_id_by_ocr_filtering()
+    fake_review_blog_ids = get_blog_id_by_ocr_filtering(OCR_TARGET_KEYWORDS, img_base_dir)
 
     # 종료 시간 기록 및 출력
     end_time = time.time()

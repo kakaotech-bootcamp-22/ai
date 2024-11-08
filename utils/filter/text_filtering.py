@@ -4,22 +4,10 @@ from pathlib import Path
 from functools import partial
 from tqdm import tqdm
 
+# 나중에 제거 !
+#
 
-def get_sponsored_keywords():
-    """
-    광고성 문구 키워드 목록을 반환합니다.
-    """
-    return [
-        "소정의 원고료",
-        "지원받아",
-        "제공받아",
-        "제품을 제공받아",
-        "체험단을 통한 리뷰",
-        "협찬 받아"
-    ]
-
-
-def process_text_file(file_path):
+def process_text_file(file_path, TEXT_TARGET_KEYWORDS):
     """
     개별 텍스트 파일을 처리하여 광고성 문구 포함 여부를 확인합니다.
 
@@ -39,7 +27,7 @@ def process_text_file(file_path):
 
         # 광고성 문구 검사
         found_keywords = []
-        for keyword in get_sponsored_keywords():
+        for keyword in TEXT_TARGET_KEYWORDS:
             if keyword in content:
                 found_keywords.append(keyword)
 
@@ -53,7 +41,7 @@ def process_text_file(file_path):
         return file_path.stem, False, []
 
 
-def get_fake_blog_id_by_text_filtering():
+def get_blog_id_by_text_filtering(TEXT_TARGET_KEYWORDS, txt_base_dir):
     """
     txt 폴더 내의 파일들을 멀티프로세싱으로 순회하며
     광고성 문구가 포함된 블로그 ID를 찾아 반환합니다.
@@ -66,9 +54,6 @@ def get_fake_blog_id_by_text_filtering():
                {블로그ID: [발견된 문구 목록]} 형태의 상세 정보 딕셔너리)
     """
 
-    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    txt_base_dir = os.path.join(project_root, 'data', 'txt')
-
     # Path 객체로 변환
     base_path = Path(txt_base_dir)
 
@@ -76,7 +61,7 @@ def get_fake_blog_id_by_text_filtering():
     text_files = [f for f in base_path.iterdir() if f.is_file() and f.suffix == '.txt']
 
     print(f"총 {len(text_files)}개의 텍스트 파일 처리 시작...")
-    print(f"검색할 광고성 문구 수: {len(get_sponsored_keywords())}개")
+    print(f"검색할 광고성 문구 수: {len(TEXT_TARGET_KEYWORDS)}개")
 
     # CPU 코어 수 확인
     num_cores = multiprocessing.cpu_count()
@@ -84,9 +69,11 @@ def get_fake_blog_id_by_text_filtering():
 
     # 멀티프로세싱 풀 생성
     with multiprocessing.Pool(processes=num_cores) as pool:
+        process_func = partial(process_text_file, TEXT_TARGET_KEYWORDS=TEXT_TARGET_KEYWORDS)
+
         # tqdm으로 진행률 표시하면서 병렬 처리
         results = list(tqdm(
-            pool.imap(process_text_file, text_files),
+            pool.imap(process_func, text_files),
             total=len(text_files),
             desc="파일 처리 중"
         ))
@@ -113,7 +100,11 @@ if __name__ == "__main__":
 
     # 함수 실행
     # sponsored_ids, detailed_info = find_sponsored_blog_ids(txt_folder_path)
-    sponsored_ids = get_fake_blog_id_by_text_filtering()
+
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    txt_base_dir = os.path.join(project_root, 'data', 'collected_fake_data', 'txt')
+
+    #sponsored_ids = get_blog_id_by_text_filtering(TEXT_TARGET_KEYWORDS, txt_base_dir)
 
     # 결과 출력
     print(f"\n광고성 문구가 포함된 블로그 수: {len(sponsored_ids)}")
