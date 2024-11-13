@@ -50,10 +50,10 @@ try:
     clear_directory(save_dir)
 
     # CSV 파일 생성 경로
-    os.makedirs('data/csv', exist_ok=True)
-    post_content_path = "data/csv/post_content_data.csv"
-    post_meta_path = "data/csv/post_meta_data.csv"
-    blogger_meta_path = "data/csv/blogger_meta_data.csv"
+    os.makedirs('data/collected_data/csv', exist_ok=True)
+    post_content_path = "data/collected_data/csv/post_content_data.csv"
+    post_meta_path = "data/collected_data/csv/post_meta_data.csv"
+    blogger_meta_path = "data/collected_data/csv/blogger_meta_data.csv"
 
     # 파일이 이미 존재하면 삭제
     if os.path.exists(post_content_path):
@@ -67,29 +67,35 @@ try:
     # 크롤링 시간 측정
     start_time = time.time()
 
-    #area_list = ['판교', "강남", "성수", "군자", "제주도"]
+    # area_list = ['판교', "강남", "성수", "군자", "제주도"]   # "북촌"
+
     area_list = [
         "강남", "교대", "홍대", "이태원", "성수", "압구정", "신사", "명동", "여의도", "건대", "군자",
-        "판교", "가로수길", "종로", "삼청동", "광화문", "서래마을", "동대문", "합정", "상수", "대학로",
-        "신촌", "서강대", "보문동", "신림동", "사당", "삼각지", "용산", "한남동", "서울대입구", "을지로", "연남동", "안국",
+        "판교", "가로수길", "종로", "삼청동", "광화문", "서래마을",
+        "동대문", "합정", "상수", "대학로",
+        "신촌", "서강대", "보문동", "신림동", "사당",
+        "삼각지", "용산", "한남동", "서울대입구", "을지로", "연남동", "안국",
         "노량진", "청담동", "연남동", "마포", "잠실", "선릉",
-        "남산", "서초", "정자역", # "북촌"
-        "왕십리", "청량리", "미아리", "의정부", "광명", "여수", "순천", "전주 한옥마을", "이촌동", "대치동", "송파"
+        "남산", "서초", "정자역",
+        "왕십리", "청량리", "미아리", "의정부", "광명",
+        "여수", "순천", "전주 한옥마을", "이촌동", "대치동", "송파"
         "해운대", "광안리", "전포동", "서면", "송정", "구월동", "송도", "주안", "인사동", "목동",
         "양재", "일산", "수원", "동탄", "기흥", "용인", "안양", "평촌", "구리", "김포", "파주", "시흥", "하남 미사",
         "남포동", "남천동", "동래", "성남", "부평", "화정동", "장안동", "가양동", "홍제동", "문래동",
         "백석동", "대구 동성로", "대구", "대전", "청주 성안길", "천안 신부동", "군산 월명동", "익산 모현동", "포항 구룡포", "울산 삼산동",
-        "강릉", "춘천", "평창","속초", "양양", "철원", "동해", "원주", "정선", "인제",
+        "강릉", "춘천", "평창", "속초", "양양", "철원",
+        "동해", "원주", "정선", "인제",
         "제주 서귀포", "제주 애월", "한림"
     ]
+
     print(len(area_list))
-    print("Current working MAIN directory:", os.getcwd())
+    # print("Current working MAIN directory:", os.getcwd())
 
     is_first = True
     for area in area_list:
         keyword = area + " 맛집 리뷰"
         #keyword = "내돈내산 "+ area + " 맛집 리뷰" # 진짜 리뷰 키워드 서칭
-        print(keyword)
+        print('*** 현재 크롤링 중인 장소 키워드 *** : ', keyword)
         print()
         urls = get_blog_links(keyword)
 
