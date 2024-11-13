@@ -8,7 +8,7 @@ def get_fake_blog_id_by_img_url_filtering():
 
     # 프로젝트 루트로부터 data/csv 폴더로 경로 설정
     project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    csv_path = os.path.join(project_root, 'data', 'csv', 'post_meta_data.csv')
+    csv_path = os.path.join(project_root, 'data', 'collected_fake_data', 'csv', 'post_meta_data.csv')
 
     df = pd.read_csv(csv_path, header=0, usecols=["blog_id", "img_urls"])
 

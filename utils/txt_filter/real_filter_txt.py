@@ -5,13 +5,14 @@ import os
 
 def copy_txt_files():
     # CSV 파일에서 blog_id 읽기
-    csv_path = '/Users/admin/PycharmProjects/ai-jo_crawler/data/real_data/csv/real_blogger_meta_data.csv'
-    source_dir = '/Users/admin/PycharmProjects/ai-jo_crawler/data/collected_real_data/txt'
-    target_dir = '/Users/admin/PycharmProjects/ai-jo_crawler/data/real_data/txt'
+    csv_path = '/data/real_data/csv/real_blogger_meta_data.csv'
+    source_dir = '/data/collected_real_data/txt'
+    target_dir = '/data/real_data/txt'
 
-    # 타겟 디렉토리가 없으면 생성
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir)
+    # 타겟 디렉토리가 있으면 삭제하고 새로 생성
+    if os.path.exists(target_dir):
+        shutil.rmtree(target_dir)
+    os.makedirs(target_dir)
 
     try:
         # CSV 파일 읽기
