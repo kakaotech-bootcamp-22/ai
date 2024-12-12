@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 def parse_html(driver, url):
     # URL에 접속
     driver.get(url)
-    time.sleep(2)  # 페이지 로딩 대기 (필요에 따라 조정 가능)
+    time.sleep(3)  # 페이지 로딩 대기 (필요에 따라 조정 가능)
 
     # 페이지의 HTML 소스 가져오기
     try:
