@@ -5,7 +5,7 @@
 """
 
 from selenium.common import NoSuchElementException, TimeoutException
-
+import re
 def get_blogger_meta_data(soup): # 네이버 블로그 아티클 정보 크롤링하는 함수
     # 변수 기본값 초기화
     intro = ""
@@ -22,6 +22,9 @@ def get_blogger_meta_data(soup): # 네이버 블로그 아티클 정보 크롤�
         '''
         intro = soup.select_one('.caption.align .itemfont.col')
         intro = intro.get_text(strip=True) if intro else None  # 텍스트만 추출하고 None 처리
+        # intro = re.sub(r'&nbsp;', ' ', intro)
+        intro = re.sub(r"\xa0", ' ', intro)
+
 
         # 블로거 배너
         banner = soup.select_one('.itemtitlefont')
@@ -32,11 +35,12 @@ def get_blogger_meta_data(soup): # 네이버 블로그 아티클 정보 크롤�
         neighbor_cnt = neighbor_cnt.get_text(strip=True) if neighbor_cnt else None
 
         # 블로그 메뉴 개수
-        menu_cnt = len(soup.find_all('.listimage'))  # albumimage
-        menu_cnt = len(soup.find_all(class_='listimage'))  # class명 앞에 `class_` 사용
+        menu_cnt1 = len(soup.find_all(class_='listimage'))  # class명 앞에 `class_` 사용
+        menu_cnt2 = len(soup.find_all(class_='albumimage'))  # albumimage
+        menu_cnt = menu_cnt1 + menu_cnt2 - 1
 
         # 포스트가 속한 메뉴 게시글 개수
-        import re
+
         h4_text = soup.select_one('h4.category_title').get_text() if soup.select_one('h4.category_title') else None
         post_in_menu_cnt = re.search(r'\d{1,3}(?:,\d{3})*', h4_text).group() if h4_text else None  # 정규식 일치 결과 추출
 
