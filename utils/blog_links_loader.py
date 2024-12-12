@@ -18,7 +18,7 @@ def get_blog_links(keyword):
     }
     params = {
         "query": keyword,
-        "display":100,
+        "display":20,
         "start": 1,
         "sort": "sim"
     }
